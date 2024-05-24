@@ -6,10 +6,14 @@ An implementation of thesis proposal from CPE200-1L, with the topic **「Effect 
 
 # To do list 🖋️
 1. Start Thesis Proposal
+
    a. Chapter 1
+
    b. Chapter 2
+
    c. Chapter 3
+
 2. Develop a software
 
 # Note 🗒️
-N/A Lorem Ipsum
+Check [SETUP.md](https://github.com/azra-dev/Facial_Recognition_With_Super_Resolution/blob/main/SETUP.md) for guide in replicating the program of the thesis
