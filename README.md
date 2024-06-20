@@ -5,13 +5,7 @@ An implementation of thesis proposal from CPE200-1L, with the topic **「Effect 
 - program a face recognition to recognize a face from the sample set.
 
 # To do list 🖋️
-1. Start Thesis Proposal
-
-   a. Chapter 1
-
-   b. Chapter 2
-
-   c. Chapter 3
+1. Finalize Thesis Proposal
 
 2. Develop a software
 
