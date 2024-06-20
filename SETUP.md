@@ -28,6 +28,7 @@ sudo apt-get install libgtk-3-dev
 
 sudo apt-get install libboost-all-dev
 
+sudo apt install libmpv-dev mpv
 
 ## **Virtual  Environment**
 
@@ -38,3 +39,5 @@ pip install cmake==3.25.2
 pip install dlib==19.24.2
 
 pip install face-recognition
+
+pip install flet==0.19.0
