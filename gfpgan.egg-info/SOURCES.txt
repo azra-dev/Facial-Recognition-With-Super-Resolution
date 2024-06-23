@@ -1,5 +1,4 @@
 README.md
-setup.py
 gfpgan/__init__.py
 gfpgan/train.py
 gfpgan/utils.py

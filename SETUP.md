@@ -36,9 +36,9 @@ sudo apt install libmpv-dev mpv
 
 _Note: Make sure to clone https://github.com/TencentARC/GFPGAN first in a separate repository. Paste **requirements.txt**, **VERSION**, **setup.py**, **experiments** folder, and **gfpgan** folder into this repository afterwards. After installation, it can be deleted._
 
-pip install -r requirements.txt
+pip install -r _gfppgan-package/requirements.txt
 pip install basicsr>=1.4.2 facexlib>=0.2.5
-python setup.py develop
+python _gfpgan-package/setup.py develop
 pip install realesrgan
 wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P experiments/pretrained_models
 
