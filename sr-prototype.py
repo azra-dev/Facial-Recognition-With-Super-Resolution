@@ -178,7 +178,7 @@ class SR():
 
 
 def main():
-    sr_prototype = SR(input = 'tpdne_dataset/LR128/3.png', upscale=8)
+    sr_prototype = SR(input = 'tpdne_dataset/LR128/test.png', upscale=4)
     sr_prototype.Run()
 
 if __name__ == '__main__':
