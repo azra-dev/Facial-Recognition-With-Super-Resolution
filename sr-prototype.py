@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import os
 import torch
+import glob
 from basicsr.utils import imwrite
 from gfpgan import GFPGANer
 
@@ -12,7 +13,7 @@ class SR():
 
     def __init__(self,
                 input = 'tpdne_dataset/LR128',
-                output = '_results',
+                output = 'test_results',
                 version = '1.3',
                 upscale = 2,
                 bg_upsampler = 'realesrgan',
@@ -83,7 +84,10 @@ class SR():
             arch = 'clean'
             channel_multiplier = 2
             model_name = 'GFPGANv1.3'
-            url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
+            if os.path.exists("experiments/pretrained_models/GFPGANv1.3.pth"):
+                url = "experiments/pretrained_models/GFPGANv1.3.pth"
+            else:
+                url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
         elif self.version == '1.4':
             arch = 'clean'
             channel_multiplier = 2
@@ -116,59 +120,69 @@ class SR():
     
     # UPSCALE / RESTORE
     def Upscale(self):
-        # read image
-        img_name = os.path.basename(self.input)
-        basename, ext = os.path.splitext(img_name)
-        input_img = cv2.imread(self.input, cv2.IMREAD_COLOR)
+        if self.input.endswith('/'):
+            self.input = self.input[:-1]
+        if os.path.isfile(self.input):
+            img_list = [self.input]
+        else:
+            img_list = sorted(glob.glob(os.path.join(self.input, '*')))
 
-        # restore faces and background if necessary
-        cropped_faces, restored_faces, restored_img = self.restorer.enhance(
-            input_img,
-            has_aligned=self.aligned,
-            only_center_face=self.only_center_face,
-            paste_back=True,
-            weight=self.weight)
+        os.makedirs(self.output, exist_ok=True)
 
-        # save faces
-        for idx, (cropped_face, restored_face) in enumerate(zip(cropped_faces, restored_faces)):
-            # save cropped face
-            save_crop_path = os.path.join(self.output, 'cropped_faces', f'{basename}_{idx:02d}.png')
-            imwrite(cropped_face, save_crop_path)
-            # save restored face
-            if (self.suffix is None and self.prefix is None):
-                save_face_name = f'{basename}_{idx:02d}.png'
-            else:
-                save_face_name = f'{basename}_{idx:02d}'
-                if self.suffix is not None:
-                    save_face_name = f'{save_face_name}_{self.suffix}'
-                if self.prefix is not None:
-                    save_face_name = f'{self.prefix}_{save_face_name}'
-                save_face_name = f'{save_face_name}.png'
-            
-            save_restore_path = os.path.join(self.output, 'restored_faces', save_face_name)
-            imwrite(restored_face, save_restore_path)
+        for img_path in img_list:
+            # read image
+            img_name = os.path.basename(img_path)
+            basename, ext = os.path.splitext(img_name)
+            input_img = cv2.imread(img_path, cv2.IMREAD_COLOR)
 
-            # save comparison image
-            cmp_img = np.concatenate((cropped_face, restored_face), axis=1)
-            imwrite(cmp_img, os.path.join(self.output, 'cmp', f'{basename}_{idx:02d}.png'))
+            # restore faces and background if necessary
+            cropped_faces, restored_faces, restored_img = self.restorer.enhance(
+                input_img,
+                has_aligned=self.aligned,
+                only_center_face=self.only_center_face,
+                paste_back=True,
+                weight=self.weight)
 
-        # save restored img
-        if restored_img is not None:
-            if self.ext == 'auto':
-                extension = ext[1:]
-            else:
-                extension = self.ext
+            # save faces
+            for idx, (cropped_face, restored_face) in enumerate(zip(cropped_faces, restored_faces)):
+                # save cropped face
+                save_crop_path = os.path.join(self.output, 'cropped_faces', f'{basename}_{idx:02d}.png')
+                imwrite(cropped_face, save_crop_path)
+                # save restored face
+                if (self.suffix is None and self.prefix is None):
+                    save_face_name = f'{basename}_{idx:02d}.png'
+                else:
+                    save_face_name = f'{basename}_{idx:02d}'
+                    if self.suffix is not None:
+                        save_face_name = f'{save_face_name}_{self.suffix}'
+                    if self.prefix is not None:
+                        save_face_name = f'{self.prefix}_{save_face_name}'
+                    save_face_name = f'{save_face_name}.png'
+                
+                save_restore_path = os.path.join(self.output, 'restored_faces', save_face_name)
+                imwrite(restored_face, save_restore_path)
 
-            if (self.suffix is None and self.prefix is None):
-                save_restore_path = os.path.join(self.output, 'restored_imgs', f'{basename}.{extension}')
-            else:
-                restore_name = f'{basename}'
-                if self.suffix is not None:
-                    restore_name = os.path.join(self.output, 'restored_imgs', f'{restore_name}_{self.suffix}') 
-                if self.prefix is not None:
-                    restore_name = os.path.join(self.output, 'restored_imgs', f'{self.prefix}_{restore_name}') 
-                save_restore_path = os.path.join(self.output, 'restored_imgs', f'{restore_name}.{extension}') 
-            imwrite(restored_img, save_restore_path)
+                # save comparison image
+                cmp_img = np.concatenate((cropped_face, restored_face), axis=1)
+                imwrite(cmp_img, os.path.join(self.output, 'cmp', f'{basename}_{idx:02d}.png'))
+
+            # save restored img
+            if restored_img is not None:
+                if self.ext == 'auto':
+                    extension = ext[1:]
+                else:
+                    extension = self.ext
+
+                if (self.suffix is None and self.prefix is None):
+                    save_restore_path = os.path.join(self.output, 'restored_imgs', f'{basename}.{extension}')
+                else:
+                    restore_name = f'{basename}'
+                    if self.suffix is not None:
+                        restore_name = os.path.join(self.output, 'restored_imgs', f'{restore_name}_{self.suffix}') 
+                    if self.prefix is not None:
+                        restore_name = os.path.join(self.output, 'restored_imgs', f'{self.prefix}_{restore_name}') 
+                    save_restore_path = os.path.join(self.output, 'restored_imgs', f'{restore_name}.{extension}') 
+                imwrite(restored_img, save_restore_path)
     
     def Run(self):
         self.run_background_sampler()
@@ -178,7 +192,7 @@ class SR():
 
 
 def main():
-    sr_prototype = SR(input = 'tpdne_dataset/LR128/test.png', upscale=4)
+    sr_prototype = SR(input = 'emergency/test', upscale=4)
     sr_prototype.Run()
 
 if __name__ == '__main__':
