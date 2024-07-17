@@ -14,6 +14,16 @@ Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Description-Content-Type: text/markdown
+Requires-Dist: lmdb
+Requires-Dist: numpy
+Requires-Dist: opencv-python
+Requires-Dist: pyyaml
+Requires-Dist: scipy
+Requires-Dist: tb-nightly
+Requires-Dist: torch>=1.7
+Requires-Dist: torchvision
+Requires-Dist: tqdm
+Requires-Dist: yapf
 
 # Facial Recognition With Super Resolution💡
 An implementation of thesis proposal from CPE200-1L, with the topic **「Effect of Super Resolution in Facial Recognition」**. Face recognition is widely used in modern world, whereas it is being used for security purposes, automation, and others. However, low resolution or pixelated face images would face an issue in facial recognition. The thesis would like to determine the accuracy and precision of Facial Recognition with and without SRGAN, and compare the result between the two. The objective of the thesis is to:

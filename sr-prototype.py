@@ -192,7 +192,7 @@ class SR():
 
 
 def main():
-    sr_prototype = SR(input = 'emergency/test', upscale=4)
+    sr_prototype = SR(input = 'emergency/test', upscale=2)
     sr_prototype.Run()
 
 if __name__ == '__main__':
