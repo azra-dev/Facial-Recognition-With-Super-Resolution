@@ -191,7 +191,7 @@ class Facenet():
 
 # main -------------------------------------------------------------------
 def main():
-    FN = Facenet(input='emergency\\test', output='facenet_results', database='emergency/database')
+    FN = Facenet(input='emergency\\test', output='results_facenet', database='emergency/database')
     FN.run_recognition()
 
 if __name__ == '__main__':
