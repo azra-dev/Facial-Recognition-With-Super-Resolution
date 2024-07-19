@@ -13,7 +13,7 @@ class SR():
 
     def __init__(self,
                 input = 'tpdne_dataset/LR128',
-                output = 'test_results',
+                output = 'results_gfpgan',
                 version = '1.3',
                 upscale = 2,
                 bg_upsampler = 'realesrgan',

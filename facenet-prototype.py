@@ -45,19 +45,18 @@ def detect_faces_dnn(image, net, conf_threshold=0.3):
             faces.append((startX, startY, endX, endY, face))
 
             h1, w1 = face.shape[:2]
-            print(startX, startY, endX, endY)
-            print(f"height: {h1} width: {w1}")
     
     print(f"Number of faces detected: {len(faces)}")
     return faces
 
 # MTCNN
 detector = MTCNN()
-def detect_faces_mtcnn(image, conf_threshold=0.9):
+def detect_faces_mtcnn(image, conf_threshold=0.9, mode="multiple"):
     rgb_image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
     results = detector.detect_faces(rgb_image)
     
     faces = []
+    confidences = []
     for result in results:
         confidence = result['confidence']
         x, y, width, height = result['box']
@@ -66,8 +65,12 @@ def detect_faces_mtcnn(image, conf_threshold=0.9):
         if confidence >= conf_threshold:
             face = image[startY:endY, startX:endX]
             faces.append((startX, startY, endX, endY, face))
+            confidences.append(confidence)
     
-    return faces
+    if mode=="multiple":
+        return faces
+    elif mode=="single":
+        return faces[np.argmax(confidences)]
 
 # return a preprocessed face (returns only one)
 def preprocess_face(face, image_size=160):
@@ -95,7 +98,7 @@ from scipy.spatial.distance import cosine
 def cosine_similarity(embedding1, embedding2):
     return 1 - cosine(embedding1, embedding2)  # Similarity score (0 to 1)
 
-def recognize_faces(known_embeddings, known_labels, embeddings, threshold=0.5):
+def recognize_faces(known_embeddings, known_labels, embeddings, threshold=0.7):
     recognized_faces = []
     for embedding in embeddings:
         distances = []
@@ -107,9 +110,9 @@ def recognize_faces(known_embeddings, known_labels, embeddings, threshold=0.5):
         print(distances)
         if best_distance >= threshold:
             index = np.argmax(distances)
-            recognized_faces.append(known_labels[index])
+            recognized_faces.append((known_labels[index], best_distance))
         else:
-            recognized_faces.append("Unknown")
+            recognized_faces.append(("Unknown", best_distance))
     
     return recognized_faces
 
@@ -129,25 +132,25 @@ else:
 for img_path in database_list:
     img_name = os.path.basename(img_path)
     basename, ext = os.path.splitext(img_name)
-    known_images.append(img_path)
+    db_image = cv.imread(img_path)
+    db_image = detect_faces_mtcnn(db_image, mode="single")
+    known_images.append(db_image)
     known_labels.append(basename)
 
-known_faces = [cv.imread(img) for img in known_images]
-preprocessed_known_faces = [preprocess_face(face) for face in known_faces]
+known_faces = known_images
+preprocessed_known_faces = [preprocess_face(face) for _, _, _, _, face in known_faces]
 known_embeddings = generate_embeddings(facenet_model, preprocessed_known_faces)
 
 
 # main -------------------------------------------------------------------
-# test_path = 'emergency\\test'
-test_path = 'emergency\\test_HR'
+test_path = 'emergency\\test'
+# test_path = 'emergency\\test_HR'
 if test_path.endswith('/'):
     test_path = test_path[:-1]
 if os.path.isfile(test_path):
     test_list = [test_path]
 else:
     test_list = sorted(glob.glob(os.path.join(test_path, '*')))
-
-print(test_list)
 
 for test_path in test_list:
     print(test_path)
@@ -163,9 +166,9 @@ for test_path in test_list:
 
         recognized_faces = recognize_faces(known_embeddings, known_labels, embeddings)
 
-        for (startX, startY, endX, endY, _), label in zip(faces, recognized_faces):
+        for (startX, startY, endX, endY, _), (label, distance) in zip(faces, recognized_faces):
             cv.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 4)
-            cv.putText(image, label, (startX, startY - 10), cv.FONT_HERSHEY_SIMPLEX, 1.8, (0, 255, 0), 4)
+            cv.putText(image, f'{label} - {round(distance*100, 2)}%', (startX, startY - 10), cv.FONT_HERSHEY_SIMPLEX, 1.8, (0, 255, 0), 4)
         
         imwrite(image, f'facenet_results/{basename}_recognition{ext}')
     else:
