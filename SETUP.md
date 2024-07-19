@@ -35,6 +35,10 @@ The Raspberry 4 uses any Linux-based OS with any Desktop Environment. Recommende
 - wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P experiments/pretrained_models
 
 #### For Face Detection
+- pip install keras-facenet tensorflow opencv-python mtcnn
+> [!WARNING]
+> The following libraries may not be used in the thesis.
+
 - pip install pybind11 cmake==3.25.2
 - pip install dlib==19.24.2 face-recognition 
 
