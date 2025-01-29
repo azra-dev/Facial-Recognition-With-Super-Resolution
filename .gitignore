@@ -1,7 +1,4 @@
-experiments/pretrained_models/GFPGANv1.3.pth
 gfpgan/weights/detection_Resnet50_Final.pth
 .git/objects/2b/1778cb824f6ac0731f71cc91a6981a02cf15fa
-.git/objects/pack/pack-ab8a3d9d7a2ac0624fc6aac0268f027ec110ae16.pack
-experiments/pretrained_models/facenet/model-20180402-114759.ckpt-275.data-00000-of-00001
+.git/objects/pack/pack-c5eef7d5fc75ea83a8722260372845b99665b3ed.pack
 experiments/pretrained_models/GFPGANv1.3.pth
-gfpgan/weights/detection_Resnet50_Final.pth
