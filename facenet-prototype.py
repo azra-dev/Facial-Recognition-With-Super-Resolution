@@ -10,15 +10,15 @@ from scipy.spatial.distance import cosine
 # functions -------------------------------------------------------------------
 class Facenet():
     net = cv.dnn.readNetFromCaffe(
-        'experiments/pretrained_models/facenet/deploy.prototxt.txt',
-        'experiments/pretrained_models/facenet/res10_300x300_ssd_iter_140000.caffemodel'
+        'experiments/facenet/deploy.prototxt.txt',
+        'experiments/facenet/res10_300x300_ssd_iter_140000.caffemodel'
     )
 
     def __init__(self, 
                  input='emergency\\test', 
                  output='facenet_results',
                  database='emergency/database',
-                 facenet_model_path = 'experiments/pretrained_models/facenet/20180402-114759.pb'):
+                 facenet_model_path = 'experiments/facenet/20180402-114759.pb'):
         self.input = input
         self.output = output
         self.facenet_model_path = facenet_model_path
@@ -110,7 +110,7 @@ class Facenet():
     def cosine_similarity(embedding1, embedding2):
         return 1 - cosine(embedding1, embedding2)  # Similarity score (0 to 1)
 
-    def recognize_faces(self, known_embeddings, known_labels, embeddings, threshold=0.7):
+    def recognize_faces(self, known_embeddings, known_labels, embeddings, threshold=0.1):
         recognized_faces = []
         for embedding in embeddings:
             distances = []
@@ -183,15 +183,15 @@ class Facenet():
                     cv.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 4)
                     cv.putText(image, f'{label} - {round(distance*100, 2)}%', (startX, startY - 10), cv.FONT_HERSHEY_SIMPLEX, 1.8, (0, 255, 0), 4)
                 
-                imwrite(image, f'{self.output}/{basename}_recognition{ext}')
+                imwrite(image, f'{self.output}/{basename}_cosinerecognition{ext}')
             else:
                 print("no faces found. repeating iteration.")
-                imwrite(image, f'{self.output}/{basename}_recognition{ext}')
+                imwrite(image, f'{self.output}/{basename}_cosinerecognition{ext}')
 
 
 # main -------------------------------------------------------------------
 def main():
-    FN = Facenet(input='emergency\\test', output='results_facenet', database='emergency/database')
+    FN = Facenet(input='captures', output='output', database='database')
     FN.run_recognition()
 
 if __name__ == '__main__':

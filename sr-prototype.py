@@ -84,8 +84,8 @@ class SR():
             arch = 'clean'
             channel_multiplier = 2
             model_name = 'GFPGANv1.3'
-            if os.path.exists("experiments/pretrained_models/GFPGANv1.3.pth"):
-                url = "experiments/pretrained_models/GFPGANv1.3.pth"
+            if os.path.exists("experiments/GFPGANv1.3.pth"):
+                url = "experiments/GFPGANv1.3.pth"
             else:
                 url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
         elif self.version == '1.4':
@@ -101,7 +101,7 @@ class SR():
         else:
             raise ValueError(f'Wrong model version {self.version}.')
         
-        model_path = os.path.join('experiments/pretrained_models', model_name + '.pth')
+        model_path = os.path.join('experiments', model_name + '.pth')
         if not os.path.isfile(model_path):
             model_path = os.path.join('gfpgan/weights', model_name + '.pth')
         if not os.path.isfile(model_path):
@@ -173,7 +173,7 @@ class SR():
                 else:
                     extension = self.ext
 
-                if (self.suffix is None and self.prefix is None):
+                if (self.suffix is not None and self.prefix is not None):
                     save_restore_path = os.path.join(self.output, 'restored_imgs', f'{basename}.{extension}')
                 else:
                     restore_name = f'{basename}'
@@ -192,7 +192,10 @@ class SR():
 
 
 def main():
-    sr_prototype = SR(input = 'emergency/req1.jpg', upscale=2)
+    sr_prototype = SR(
+        input = 'captures', 
+        output = 'results',
+        upscale=2)
     sr_prototype.Run()
 
 if __name__ == '__main__':
