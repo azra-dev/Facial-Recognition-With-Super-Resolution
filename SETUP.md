@@ -24,6 +24,7 @@ The Raspberry 4 uses any Linux-based OS with any Desktop Environment. Recommende
 - sudo apt-get install libgtk-3-dev
 - sudo apt-get install libboost-all-dev
 - sudo apt install libmpv-dev mpv
+- sudo apt install libcap-dev
 
 ### **Virtual  Environment**
 
@@ -43,7 +44,7 @@ The Raspberry 4 uses any Linux-based OS with any Desktop Environment. Recommende
 - pip install dlib==19.24.2 face-recognition 
 
 #### For GUI
-- pip install flet==0.19.0
+- pip install flet==0.19.0 picamera2
 
 # Error Handling 🔧
 
