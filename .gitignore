@@ -1,5 +1,6 @@
-gfpgan/weights/detection_Resnet50_Final.pth
-.git/objects/2b/1778cb824f6ac0731f71cc91a6981a02cf15fa
-.git/objects/pack/pack-c5eef7d5fc75ea83a8722260372845b99665b3ed.pack
 experiments/GFPGANv1.3.pth
+experiments/facenet/detection_Resnet50_Final.pth
 tensorflow-2.18.0-cp310-cp310-linux_x86_64.whl
+.git/objects/3a/c99e7ffe9b388cff52a07e25bbbb6850c58396
+.git/objects/pack/pack-9902d6e89a7043e50878a90cb1bfbc3a63cd1b27.pack
+.git/objects/pack/pack-be0a84210b1eefe6be8a0168da21c15bf075df58.pack
