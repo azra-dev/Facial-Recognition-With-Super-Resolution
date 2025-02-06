@@ -1,111 +1,76 @@
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
 Collecting basicsr
-  Using cached basicsr-1.4.2.tar.gz (172 kB)
+  Downloading basicsr-1.4.2.tar.gz (172 kB)
+     -------------------------------------- 172.5/172.5 kB 17.4 kB/s eta 0:00:00
   Preparing metadata (setup.py): started
   Preparing metadata (setup.py): finished with status 'done'
 Collecting facexlib
-  Using cached facexlib-0.3.0-py3-none-any.whl (59 kB)
+  Downloading https://www.piwheels.org/simple/facexlib/facexlib-0.3.0-py3-none-any.whl (59 kB)
+     --------------------------------------- 59.6/59.6 kB 198.5 kB/s eta 0:00:00
+Requirement already satisfied: Pillow in /usr/lib/python3/dist-packages (from basicsr) (9.4.0)
 Collecting addict
-  Using cached addict-2.4.0-py3-none-any.whl (3.8 kB)
-Collecting future
-  Using cached future-1.0.0-py3-none-any.whl (491 kB)
-Requirement already satisfied: lmdb in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (1.6.2)
-Requirement already satisfied: numpy>=1.17 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (2.0.2)
-Requirement already satisfied: opencv-python in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (4.11.0.86)
-Requirement already satisfied: Pillow in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (11.1.0)
-Requirement already satisfied: pyyaml in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (6.0.2)
-Requirement already satisfied: requests in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (2.32.3)
+  Downloading https://www.piwheels.org/simple/addict/addict-2.4.0-py3-none-any.whl (3.8 kB)
+Requirement already satisfied: future in /usr/lib/python3/dist-packages (from basicsr) (0.18.2)
+Requirement already satisfied: lmdb in /usr/lib/python3/dist-packages (from basicsr) (1.4.0)
+Requirement already satisfied: numpy>=1.17 in /usr/local/lib/python3.11/dist-packages (from basicsr) (1.26.4)
+Collecting opencv-python
+  Downloading opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (42.2 MB)
+     ---------------------------------------- 42.2/42.2 MB 5.5 MB/s eta 0:00:00
+Requirement already satisfied: pyyaml in /usr/lib/python3/dist-packages (from basicsr) (6.0)
+Requirement already satisfied: requests in /usr/lib/python3/dist-packages (from basicsr) (2.28.1)
 Collecting scikit-image
-  Downloading scikit_image-0.25.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (14.8 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.8/14.8 MB 5.6 MB/s eta 0:00:00
-Requirement already satisfied: scipy in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (1.15.1)
-Requirement already satisfied: tb-nightly in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (2.19.0a20250129)
-Requirement already satisfied: torch>=1.7 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (2.6.0)
-Requirement already satisfied: torchvision in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (0.21.0)
-Requirement already satisfied: tqdm in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (4.67.1)
-Requirement already satisfied: yapf in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from basicsr) (0.43.0)
-Collecting numba
-  Downloading numba-0.61.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.8 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 5.6 MB/s eta 0:00:00
+  Downloading scikit_image-0.25.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (14.1 MB)
+     ---------------------------------------- 14.1/14.1 MB 8.4 MB/s eta 0:00:00
+Requirement already satisfied: scipy in /usr/local/lib/python3.11/dist-packages (from basicsr) (1.15.1)
+Collecting tb-nightly
+  Downloading tb_nightly-2.19.0a20250206-py3-none-any.whl (5.5 MB)
+     ---------------------------------------- 5.5/5.5 MB 1.7 MB/s eta 0:00:00
+Requirement already satisfied: torch>=1.7 in /usr/lib/python3/dist-packages (from basicsr) (1.13.0a0+gitunknown)
+Requirement already satisfied: torchvision in /usr/lib/python3/dist-packages (from basicsr) (0.14.1a0)
+Requirement already satisfied: tqdm in /usr/lib/python3/dist-packages (from basicsr) (4.64.1)
+Requirement already satisfied: yapf in /usr/lib/python3/dist-packages (from basicsr) (0.32.0)
 Collecting filterpy
-  Using cached filterpy-1.4.5.zip (177 kB)
-  Preparing metadata (setup.py): started
-  Preparing metadata (setup.py): finished with status 'done'
-Requirement already satisfied: nvidia-cudnn-cu12==9.1.0.70 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (9.1.0.70)
-Requirement already satisfied: filelock in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (3.17.0)
-Requirement already satisfied: triton==3.2.0 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (3.2.0)
-Requirement already satisfied: networkx in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (3.4.2)
-Requirement already satisfied: nvidia-nccl-cu12==2.21.5 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (2.21.5)
-Requirement already satisfied: nvidia-cufft-cu12==11.2.1.3 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (11.2.1.3)
-Requirement already satisfied: fsspec in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (2024.12.0)
-Requirement already satisfied: typing-extensions>=4.10.0 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (4.12.2)
-Requirement already satisfied: nvidia-cusolver-cu12==11.6.1.9 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (11.6.1.9)
-Requirement already satisfied: nvidia-cusparse-cu12==12.3.1.170 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (12.3.1.170)
-Requirement already satisfied: sympy==1.13.1 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (1.13.1)
-Requirement already satisfied: nvidia-nvjitlink-cu12==12.4.127 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (12.4.127)
-Requirement already satisfied: nvidia-cuda-nvrtc-cu12==12.4.127 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (12.4.127)
-Requirement already satisfied: jinja2 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (3.1.5)
-Requirement already satisfied: nvidia-nvtx-cu12==12.4.127 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (12.4.127)
-Requirement already satisfied: nvidia-curand-cu12==10.3.5.147 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (10.3.5.147)
-Requirement already satisfied: nvidia-cusparselt-cu12==0.6.2 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (0.6.2)
-Requirement already satisfied: nvidia-cuda-cupti-cu12==12.4.127 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (12.4.127)
-Requirement already satisfied: nvidia-cublas-cu12==12.4.5.8 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (12.4.5.8)
-Requirement already satisfied: nvidia-cuda-runtime-cu12==12.4.127 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from torch>=1.7->basicsr) (12.4.127)
-Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from sympy==1.13.1->torch>=1.7->basicsr) (1.3.0)
-Collecting matplotlib
-  Downloading matplotlib-3.10.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (8.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 2.3 MB/s eta 0:00:00
+  Downloading https://www.piwheels.org/simple/filterpy/filterpy-1.4.5-py3-none-any.whl (109 kB)
+     ------------------------------------- 109.6/109.6 kB 202.1 kB/s eta 0:00:00
+Collecting numba
+  Downloading numba-0.61.0-cp311-cp311-manylinux_2_28_aarch64.whl (3.5 MB)
+     ---------------------------------------- 3.5/3.5 MB 9.5 MB/s eta 0:00:00
+Requirement already satisfied: matplotlib in /usr/lib/python3/dist-packages (from filterpy->facexlib) (3.6.3)
 Collecting llvmlite<0.45,>=0.44.0dev0
-  Downloading llvmlite-0.44.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (42.4 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 42.4/42.4 MB 5.5 MB/s eta 0:00:00
-Requirement already satisfied: idna<4,>=2.5 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from requests->basicsr) (3.10)
-Requirement already satisfied: certifi>=2017.4.17 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from requests->basicsr) (2024.12.14)
-Requirement already satisfied: urllib3<3,>=1.21.1 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from requests->basicsr) (2.3.0)
-Requirement already satisfied: charset-normalizer<4,>=2 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from requests->basicsr) (3.4.1)
-Collecting lazy-loader>=0.4
-  Using cached lazy_loader-0.4-py3-none-any.whl (12 kB)
-Requirement already satisfied: packaging>=21 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from scikit-image->basicsr) (24.2)
-Collecting tifffile>=2022.8.12
-  Downloading tifffile-2025.1.10-py3-none-any.whl (227 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 227.6/227.6 kB 4.4 MB/s eta 0:00:00
+  Downloading llvmlite-0.44.0-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl (41.2 MB)
+     ---------------------------------------- 41.2/41.2 MB 5.7 MB/s eta 0:00:00
+Collecting networkx>=3.0
+  Downloading networkx-3.4.2-py3-none-any.whl (1.7 MB)
+     ---------------------------------------- 1.7/1.7 MB 8.7 MB/s eta 0:00:00
+Collecting Pillow
+  Downloading pillow-11.1.0-cp311-cp311-manylinux_2_28_aarch64.whl (4.4 MB)
+     ---------------------------------------- 4.4/4.4 MB 4.9 MB/s eta 0:00:00
 Collecting imageio!=2.35.0,>=2.33
-  Downloading imageio-2.37.0-py3-none-any.whl (315 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 315.8/315.8 kB 3.9 MB/s eta 0:00:00
-Requirement already satisfied: markdown>=2.6.8 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (3.7)
-Requirement already satisfied: grpcio>=1.48.2 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (1.70.0)
-Requirement already satisfied: six>1.9 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (1.17.0)
-Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (0.7.2)
-Requirement already satisfied: protobuf!=4.24.0,>=3.19.6 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (5.29.3)
-Requirement already satisfied: absl-py>=0.4 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (2.1.0)
-Requirement already satisfied: werkzeug>=1.0.1 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (3.1.3)
-Requirement already satisfied: setuptools>=41.0.0 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from tb-nightly->basicsr) (65.5.0)
-Requirement already satisfied: tomli>=2.0.1 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from yapf->basicsr) (2.2.1)
-Requirement already satisfied: platformdirs>=3.5.1 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from yapf->basicsr) (4.3.6)
-Requirement already satisfied: MarkupSafe>=2.1.1 in /home/lunatic/virtual_env/thesis310/lib/python3.10/site-packages (from werkzeug>=1.0.1->tb-nightly->basicsr) (3.0.2)
-Collecting contourpy>=1.0.1
-  Downloading contourpy-1.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (324 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 325.0/325.0 kB 3.8 MB/s eta 0:00:00
-Collecting kiwisolver>=1.3.1
-  Downloading kiwisolver-1.4.8-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 5.3 MB/s eta 0:00:00
-Collecting cycler>=0.10
-  Using cached cycler-0.12.1-py3-none-any.whl (8.3 kB)
-Collecting python-dateutil>=2.7
-  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
-Collecting fonttools>=4.22.0
-  Downloading fonttools-4.55.8-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.6 MB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.6/4.6 MB 5.0 MB/s eta 0:00:00
-Collecting pyparsing>=2.3.1
-  Downloading pyparsing-3.2.1-py3-none-any.whl (107 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 107.7/107.7 kB 4.4 MB/s eta 0:00:00
-Building wheels for collected packages: basicsr, filterpy
+  Downloading https://www.piwheels.org/simple/imageio/imageio-2.37.0-py3-none-any.whl (315 kB)
+     -------------------------------------- 315.8/315.8 kB 87.4 kB/s eta 0:00:00
+Collecting tifffile>=2022.8.12
+  Downloading https://www.piwheels.org/simple/tifffile/tifffile-2025.1.10-py3-none-any.whl (227 kB)
+     ------------------------------------- 227.4/227.4 kB 300.4 kB/s eta 0:00:00
+Requirement already satisfied: packaging>=21 in /usr/lib/python3/dist-packages (from scikit-image->basicsr) (23.0)
+Collecting lazy-loader>=0.4
+  Downloading https://www.piwheels.org/simple/lazy-loader/lazy_loader-0.4-py3-none-any.whl (12 kB)
+Requirement already satisfied: absl-py>=0.4 in /usr/local/lib/python3.11/dist-packages (from tb-nightly->basicsr) (2.1.0)
+Requirement already satisfied: grpcio>=1.48.2 in /usr/local/lib/python3.11/dist-packages (from tb-nightly->basicsr) (1.70.0)
+Requirement already satisfied: markdown>=2.6.8 in /usr/lib/python3/dist-packages (from tb-nightly->basicsr) (3.4.1)
+Requirement already satisfied: protobuf!=4.24.0,>=3.19.6 in /usr/local/lib/python3.11/dist-packages (from tb-nightly->basicsr) (4.25.6)
+Requirement already satisfied: setuptools>=41.0.0 in /usr/lib/python3/dist-packages (from tb-nightly->basicsr) (66.1.1)
+Requirement already satisfied: six>1.9 in /usr/lib/python3/dist-packages (from tb-nightly->basicsr) (1.16.0)
+Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in /usr/local/lib/python3.11/dist-packages (from tb-nightly->basicsr) (0.7.2)
+Requirement already satisfied: werkzeug>=1.0.1 in /usr/lib/python3/dist-packages (from tb-nightly->basicsr) (2.2.2)
+Building wheels for collected packages: basicsr
   Building wheel for basicsr (setup.py): started
   Building wheel for basicsr (setup.py): finished with status 'done'
-  Created wheel for basicsr: filename=basicsr-1.4.2-py3-none-any.whl size=214820 sha256=9851d209fe5d5593a52d63d8fb874b9709a7a43b392203c27976231981c17425
-  Stored in directory: /home/lunatic/.cache/pip/wheels/38/83/99/2d8437cc652a01af27df5ff037a4075e95b52d67705c5f30ca
-  Building wheel for filterpy (setup.py): started
-  Building wheel for filterpy (setup.py): finished with status 'done'
-  Created wheel for filterpy: filename=filterpy-1.4.5-py3-none-any.whl size=110458 sha256=570ec11f75d8d38564814cade648d1aa0e858d1ecc5c2069963ac54fccbb8b0f
-  Stored in directory: /home/lunatic/.cache/pip/wheels/0f/0c/ea/218f266af4ad626897562199fbbcba521b8497303200186102
-Successfully built basicsr filterpy
-Installing collected packages: addict, tifffile, python-dateutil, pyparsing, llvmlite, lazy-loader, kiwisolver, imageio, future, fonttools, cycler, contourpy, scikit-image, numba, matplotlib, filterpy, facexlib, basicsr
-Successfully installed addict-2.4.0 basicsr-1.4.2 contourpy-1.3.1 cycler-0.12.1 facexlib-0.3.0 filterpy-1.4.5 fonttools-4.55.8 future-1.0.0 imageio-2.37.0 kiwisolver-1.4.8 lazy-loader-0.4 llvmlite-0.44.0 matplotlib-3.10.0 numba-0.61.0 pyparsing-3.2.1 python-dateutil-2.9.0.post0 scikit-image-0.25.1 tifffile-2025.1.10
+  Created wheel for basicsr: filename=basicsr-1.4.2-py3-none-any.whl size=214821 sha256=53ada03c57b20060f5c9ece1b16f34d9d27465765ab4ad4215479f683498038a
+  Stored in directory: /root/.cache/pip/wheels/6d/a4/b3/9f888ba88efcae6dd4bbce69832363de9c4051142674f779fa
+Successfully built basicsr
+Installing collected packages: addict, tifffile, tb-nightly, Pillow, opencv-python, networkx, llvmlite, lazy-loader, numba, imageio, filterpy, scikit-image, facexlib, basicsr
+  Attempting uninstall: Pillow
+    Found existing installation: Pillow 9.4.0
+    Not uninstalling pillow at /usr/lib/python3/dist-packages, outside environment /usr
+    Can't uninstall 'Pillow'. No files were found to uninstall.
+Successfully installed Pillow-11.1.0 addict-2.4.0 basicsr-1.4.2 facexlib-0.3.0 filterpy-1.4.5 imageio-2.37.0 lazy-loader-0.4 llvmlite-0.44.0 networkx-3.4.2 numba-0.61.0 opencv-python-4.11.0.86 scikit-image-0.25.1 tb-nightly-2.19.0a20250206 tifffile-2025.1.10

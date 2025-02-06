@@ -8,7 +8,6 @@ import os
 import csv
 from datetime import datetime
 
-
 from facenet_prototype import Facenet
 from sr_prototype import SR
 from picamera2 import Picamera2
@@ -22,13 +21,15 @@ picam2.start()
 deb_capt = False
 
 def main(page:Page):
+    page.window_height = 360
+    page.window_width = 480
     page.update()
 
     # Current Frame -------------------
     captured_frame = ft.Image(
         src="placeholder.jpg",
-        width=640,
-        height=360,
+        width=360,
+        height=240,
         fit=ft.ImageFit.CONTAIN
     )
 

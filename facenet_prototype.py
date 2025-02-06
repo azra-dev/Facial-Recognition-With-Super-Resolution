@@ -3,10 +3,15 @@ import tensorflow as tf
 import numpy as np
 import os
 import glob
+import pickle
 from basicsr.utils import imwrite
 from mtcnn import MTCNN
 from scipy.spatial.distance import cosine
+import pandas as pd
+from datetime import datetime
 
+import sys
+sys.path.insert(0, './')
 # functions -------------------------------------------------------------------
 class Facenet():
     net = cv.dnn.readNetFromCaffe(
@@ -129,6 +134,19 @@ class Facenet():
         return recognized_faces
     
     def process_database(self):
+        embeddings_file = 'known_embeddings.pkl'
+        labels_file = 'known_labels.pkl'
+
+        # Check if the embeddings and labels files exist
+        if os.path.exists(embeddings_file) and os.path.exists(labels_file):
+            print("Loading known embeddings and labels from files.")
+            with open(embeddings_file, 'rb') as f:
+                self.known_embeddings = pickle.load(f)
+            with open(labels_file, 'rb') as f:
+                self.known_labels = pickle.load(f)
+            return
+        
+        print("Processing database to generate known embeddings and labels.")
         database_path = self.database
         self.known_labels = []
         known_images = []
@@ -153,11 +171,27 @@ class Facenet():
 
         known_faces = known_images
         preprocessed_known_faces = [self.preprocess_face(face) for _, _, _, _, face in known_faces]
-        self.known_embeddings = self.generate_embeddings(self.facenet_model, preprocessed_known_faces)
+        self.known_embeddings = self.generate_embeddings(preprocessed_known_faces)
 
-    def run_recognition(self):
-        self.process_database()
-        
+        # update database
+        current_date = datetime.today().strftime('%Y-%m-%d')
+        student_data = {
+            'Name': self.known_labels,
+            f'{current_date}': [0] * len(self.known_labels),
+        }
+        df = pd.DataFrame(student_data)
+        csv_file_path = 'student_atendance_data.csv'
+        if os.path.exists(csv_file_path):
+            os.remove(csv_file_path)
+
+        df.to_csv(csv_file_path, index=False)
+
+        with open(embeddings_file, 'wb') as f:
+            pickle.dump(self.known_embeddings, f)
+        with open(labels_file, 'wb') as f:
+            pickle.dump(self.known_labels, f)
+
+    def run_recognition(self):        
         if self.input.endswith('/') or self.input.endswith('\\'):
             self.input = self.input[:-1]
         if os.path.isfile(self.input):

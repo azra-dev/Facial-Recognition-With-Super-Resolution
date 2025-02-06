@@ -7,6 +7,7 @@ Author: Xintao Wang
 Author-email: xintao.wang@outlook.com
 License: Apache License Version 2.0
 Keywords: computer vision,pytorch,image restoration,super-resolution,face restoration,gan,gfpgan
+Platform: UNKNOWN
 Classifier: Development Status :: 4 - Beta
 Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Operating System :: OS Independent
@@ -28,3 +29,5 @@ An implementation of thesis proposal from CPE200-1L, with the topic **「Effect 
 
 # Note 🗒️
 Check [SETUP.md](https://github.com/azra-dev/Facial_Recognition_With_Super_Resolution/blob/main/SETUP.md) for guide in replicating the program of the thesis
+
+
