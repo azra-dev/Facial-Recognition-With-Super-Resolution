@@ -16,7 +16,7 @@ FN = Facenet()
 GFP = SR()
 
 picam2 = Picamera2()
-picam2.preview_configuration.main.size = (4056, 3040)
+picam2.preview_configuration.main.size = (400, 300)
 picam2.preview_configuration.main.format = "RGB888"
 picam2.configure("preview")
 picam2.start()
@@ -38,7 +38,6 @@ def main(page:Page):
 
     # Iterating Capture Frames --------
     def capture_frame():
-        cap = cv2.VideoCapture(0)
         clear_button.disabled = True
         recognize_button.disabled = False
         update_database_button.disabled = False
@@ -63,7 +62,20 @@ def main(page:Page):
     
     # Capture Frames
     def trigger_capture(e):
-        src_base64_img = captured_frame.src_base64
+        picam2.stop()
+        picam2.preview_configuration.main.size = (4056, 3040)
+        picam2.configure("preview")
+        picam2.start()
+        frame=picam2.capture_array()
+        _, buffer = cv2.imencode('.png', frame)
+        png_as_text = base64.b64encode(buffer).decode('utf-8') 
+        src_base64_img = png_as_text
+
+        picam2.stop()
+        picam2.preview_configuration.main.size = (400, 300)
+        picam2.configure("preview")
+        picam2.start()
+
         if (src_base64_img is not None):
             if src_base64_img.startswith('data:image'):
                 src_base64_img = src_base64_img.split(',')[1]
@@ -71,11 +83,15 @@ def main(page:Page):
             img_data = base64.b64decode(src_base64_img)
             np_img = np.frombuffer(img_data, dtype=np.uint8)
             conv_img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-            capture_path = os.path.join('captures', f"{sample_name.value}_{variant_id.value}.png")
-            cv2.imwrite(capture_path, conv_img)
+            if (database_mode.value):
+                capture_path = os.path.join('database', f"{sample_name.value}.png")
+                cv2.imwrite(capture_path, conv_img)
+            else:
+                capture_path = os.path.join('captures', 'standard', f"{sample_name.value}_{variant_id.value}.png")
+                cv2.imwrite(capture_path, conv_img)
+            
 
-
-    # Capture Frames
+    # Recognize Face
     def trigger_recognize(e):
         global deb_capt
         src_base64_img = captured_frame.src_base64
@@ -130,21 +146,25 @@ def main(page:Page):
         capture_frame()
 
     # COMPONENTS
-    capture_button = ft.ElevatedButton("Capture Faces", on_click=trigger_capture, disabled=False)
     recognize_button = ft.ElevatedButton("Recognize Faces", on_click=trigger_recognize, disabled=True)
+    enhanced_button = ft.ElevatedButton("Enhanced Faces", on_click=trigger_enhance, disabled=False)
     update_database_button = ft.ElevatedButton("Update Database", on_click=modify_database, disabled=True)
+    database_mode = ft.Checkbox(value=False, width=20, height=20)
+
+    capture_button = ft.ElevatedButton("Capture Faces", on_click=trigger_capture, disabled=False)
     clear_button = ft.ElevatedButton("Clear", on_click=clear, disabled=True)
 
-    sample_name = ft.TextField(hint_text="Name of Participant", width=200)
-    variant_id = ft.TextField(hint_text="Variant ID", width=100)
+    sample_name = ft.TextField(hint_text="Name of Participant", width=200, height=30, text_size=8, text_align=True)
+    variant_id = ft.TextField(hint_text="Variant ID", width=100, height=30, text_size=8, dense=True)
 
-    function_rack = ft.Row([recognize_button, update_database_button], alignment=ft.MainAxisAlignment.CENTER)   
-    control_rack = ft.Row([capture_button, clear_button], alignment=ft.MainAxisAlignment.CENTER)
+    # RACKS
+    function_rack = ft.Row([recognize_button, update_database_button, database_mode], alignment=ft.MainAxisAlignment.CENTER)   
+    control_rack = ft.Row([capture_button], alignment=ft.MainAxisAlignment.END)
     field_rack = ft.Row([sample_name, variant_id], alignment=ft.MainAxisAlignment.CENTER)
 
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.add(captured_frame, function_rack, control_rack, field_rack)
+    page.add(captured_frame, function_rack, field_rack, control_rack)
     capture_frame()
 
 ft.app(target=main)

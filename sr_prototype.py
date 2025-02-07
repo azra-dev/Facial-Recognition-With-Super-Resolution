@@ -193,8 +193,8 @@ class SR():
 
 def main():
     sr_prototype = SR(
-        input = 'captures', 
-        output = 'results',
+        input = 'captures/standard', 
+        output = 'captures/enhanced',
         upscale=2)
     sr_prototype.Run()
 

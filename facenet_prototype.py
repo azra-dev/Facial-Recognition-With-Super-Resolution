@@ -225,7 +225,7 @@ class Facenet():
 
 # main -------------------------------------------------------------------
 def main():
-    FN = Facenet(input='captures', output='output', database='database')
+    FN = Facenet(input='captures/standard', output='captures_recognition/cosine', database='database')
     FN.run_recognition()
 
 if __name__ == '__main__':
