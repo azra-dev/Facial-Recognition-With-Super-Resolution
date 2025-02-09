@@ -1,0 +1,8 @@
+experiments/GFPGANv1.3.pth
+experiments/facenet/detection_Resnet50_Final.pth
+.git/objects/3a/c99e7ffe9b388cff52a07e25bbbb6850c58396
+.git/objects/pack/pack-a745fa4a9ae8be17e6bfbaf7aade1290d395edfa.pack
+.git/objects/2b/1778cb824f6ac0731f71cc91a6981a02cf15fa
+gfpgan/weights/detection_Resnet50_Final.pth
+__pycache__/
+*.pyc
