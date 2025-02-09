@@ -99,7 +99,8 @@ class Facenet():
         return face
 
     # return list of embeddings
-    def generate_embeddings(self, facenet_model, faces):
+    def generate_embeddings(self, faces):
+        facenet_model = self.facenet_model
         with facenet_model.as_default():
             with tf.compat.v1.Session(graph=facenet_model) as sess:
                 images_placeholder = facenet_model.get_tensor_by_name("input:0")

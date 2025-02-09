@@ -12,13 +12,14 @@ from facenet_prototype import Facenet
 from sr_prototype import SR
 from picamera2 import Picamera2
 
+participant = ''
 FN = Facenet(
-    input='captures/standard', 
+    input=f'captures/standard/{participant}', 
     output='captures_recognition/cosine', 
     database='database')
 GFP = SR(
-    input = 'captures/standard', 
-    output = 'captures/enhanced',
+    input = f'captures/standard/{participant}', 
+    output = f'captures/enhanced',
     upscale=2)
 
 picam2 = Picamera2()
@@ -99,10 +100,14 @@ def main(page:Page):
 
     # Recognize Face
     def trigger_recognize(e):
+        global participant
+        participant=str(sample_name.value)
         FN.run_recognition()
 
     # Enhance Face
     def trigger_enhance(e):
+        global participant
+        participant=str(sample_name.value)
         GFP.Run()
 
     # Show Result
@@ -121,8 +126,10 @@ def main(page:Page):
         recognize_button.disabled = True
         update_database_button.disabled = True
         page.update()
-        os.remove("known_embeddings.pkl")
-        os.remove("known_labels.pkl")
+        if os.path.exists("known_embeddings.pkl"):
+            os.remove("known_embeddings.pkl")
+        if os.path.exists("known_labels.pkl"):
+            os.remove("known_labels.pkl")
         FN.process_database()
         print("finish updating database")
         recognize_button.disabled = False

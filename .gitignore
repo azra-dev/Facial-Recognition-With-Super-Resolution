@@ -6,3 +6,4 @@ experiments/facenet/detection_Resnet50_Final.pth
 gfpgan/weights/detection_Resnet50_Final.pth
 __pycache__/
 *.pyc
+_gfpgan-package/.eggs
