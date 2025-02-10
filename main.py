@@ -14,7 +14,7 @@ from picamera2 import Picamera2
 
 participant = ''
 FN = Facenet(
-    input=f'captures/standard/{participant}', 
+    input=f'captures/standard', 
     output='captures_recognition/cosine', 
     database='database')
 GFP = SR(
