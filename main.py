@@ -8,31 +8,24 @@ import os
 import csv
 from datetime import datetime
 
-from facenet_prototype import Facenet
+from facenet_tensorflow import Facenet
 from sr_prototype import SR
-from picamera2 import Picamera2
+# from picamera2 import Picamera2
 
 participant = ''
-FN = Facenet(
-    input=f'captures/standard', 
-    output='captures_recognition/cosine', 
-    database='database')
-GFP = SR(
-    input = f'captures/standard/{participant}', 
-    output = f'captures/enhanced',
-    upscale=2)
 
-picam2 = Picamera2()
-picam2.preview_configuration.main.size = (400, 300)
-picam2.preview_configuration.main.format = "RGB888"
-picam2.configure("preview")
-picam2.start()
+# picam2 = Picamera2()
+# picam2.preview_configuration.main.size = (400, 300)
+# picam2.preview_configuration.main.format = "RGB888"
+# picam2.configure("preview")
+# picam2.start()
 
 deb_capt = False
 
 def main(page:Page):
-    page.window_height = 420
-    page.window_width = 540
+    page.window_height = 525
+    page.window_width = 675
+    page.theme_mode = "light"
     page.update()
 
     # Current Frame -------------------
@@ -45,13 +38,13 @@ def main(page:Page):
 
     # Iterating Capture Frames --------
     def capture_frame():
-        clear_button.disabled = True
         recognize_button.disabled = False
         update_database_button.disabled = False
         page.update()
         try:
             while True:
-                frame=picam2.capture_array()
+                # frame=picam2.capture_array()
+                frame = None
                 if frame is not None:
                     _, buffer = cv2.imencode('.png', frame)
                     png_as_text = base64.b64encode(buffer).decode('utf-8') 
@@ -69,19 +62,19 @@ def main(page:Page):
     
     # Capture Frames
     def trigger_capture(e):
-        picam2.stop()
-        picam2.preview_configuration.main.size = (4056, 3040)
-        picam2.configure("preview")
-        picam2.start()
-        frame=picam2.capture_array()
-        _, buffer = cv2.imencode('.png', frame)
-        png_as_text = base64.b64encode(buffer).decode('utf-8') 
-        src_base64_img = png_as_text
+        # picam2.stop()
+        # picam2.preview_configuration.main.size = (4056, 3040)
+        # picam2.configure("preview")
+        # picam2.start()
+        # frame=picam2.capture_array()
+        # _, buffer = cv2.imencode('.png', frame)
+        # png_as_text = base64.b64encode(buffer).decode('utf-8') 
+        # src_base64_img = png_as_text
 
-        picam2.stop()
-        picam2.preview_configuration.main.size = (400, 300)
-        picam2.configure("preview")
-        picam2.start()
+        # picam2.stop()
+        # picam2.preview_configuration.main.size = (400, 300)
+        # picam2.configure("preview")
+        # picam2.start()
 
         if (src_base64_img is not None):
             if src_base64_img.startswith('data:image'):
@@ -102,13 +95,23 @@ def main(page:Page):
     def trigger_recognize(e):
         global participant
         participant=str(sample_name.value)
+        FN = Facenet(
+            input=f'captures/standard/{participant}', 
+            output=f'captures_rec_cos/standard/{participant}', 
+            database='database')
         FN.run_recognition()
+        del FN
 
     # Enhance Face
     def trigger_enhance(e):
         global participant
         participant=str(sample_name.value)
+        GFP = SR(
+            input = f'captures/standard/{participant}', 
+            output = f'captures/enhanced/{participant}',
+            upscale=2)
         GFP.Run()
+        del GFP
 
     # Show Result
     def show_result():
@@ -118,21 +121,27 @@ def main(page:Page):
 
         recognize_button.disabled = True
         update_database_button.disabled = True
-        clear_button.disabled = False
         captured_frame.update()
         page.update()
 
     def modify_database(e):
         recognize_button.disabled = True
+        enhanced_button.disabled = True
         update_database_button.disabled = True
         page.update()
         if os.path.exists("known_embeddings.pkl"):
             os.remove("known_embeddings.pkl")
         if os.path.exists("known_labels.pkl"):
             os.remove("known_labels.pkl")
+        FN = Facenet(
+            input=f'captures/standard/{participant}', 
+            output=f'captures_rec_cos/standard/{participant}', 
+            database='database')
         FN.process_database()
+        del FN
         print("finish updating database")
         recognize_button.disabled = False
+        enhanced_button.disabled = False
         update_database_button.disabled = False
         page.update()
 
@@ -140,31 +149,31 @@ def main(page:Page):
         global deb_capt
         captured_frame.src = "placeholder.jpg"
         captured_frame.src_base64 = None
-        clear_button.disabled = True
         page.update()
         deb_capt = False
         capture_frame()
 
     # COMPONENTS
-    recognize_button = ft.ElevatedButton("Recognize Faces", on_click=trigger_recognize, disabled=True)
+    recognize_button = ft.ElevatedButton("Recognize Faces", on_click=trigger_recognize, disabled=False)
     enhanced_button = ft.ElevatedButton("Enhanced Faces", on_click=trigger_enhance, disabled=False)
-    update_database_button = ft.ElevatedButton("Update Database", on_click=modify_database, disabled=True)
-    database_mode = ft.Checkbox(value=False, width=20, height=20)
+    
+    update_database_button = ft.ElevatedButton("Update Database", on_click=modify_database, disabled=False)
+    database_mode = ft.Container(content=ft.Checkbox(label="Store in database", value=False, width=20, height=20), padding=padding.only(right=150))
 
     capture_button = ft.ElevatedButton("Capture Faces", on_click=trigger_capture, disabled=False)
-    clear_button = ft.ElevatedButton("Clear", on_click=clear, disabled=True)
 
-    sample_name = ft.TextField(hint_text="Name of Participant", width=200, height=30, text_size=8, text_align=True)
-    variant_id = ft.TextField(hint_text="Variant ID", width=100, height=30, text_size=8, dense=True)
+    sample_name = ft.TextField(hint_text="Name of Participant", width=250, height=50, text_size=10, text_align=True)
+    variant_id = ft.TextField(hint_text="Variant ID", width=120, height=50, text_size=10, dense=True)
 
     # RACKS
-    function_rack = ft.Row([recognize_button, enhanced_button, update_database_button, database_mode], alignment=ft.MainAxisAlignment.CENTER)   
+    function_rack = ft.Row([recognize_button, enhanced_button], alignment=ft.MainAxisAlignment.CENTER)
+    database_rack = ft.Row([update_database_button, database_mode], alignment=ft.MainAxisAlignment.CENTER)
     control_rack = ft.Row([capture_button], alignment=ft.MainAxisAlignment.END)
     field_rack = ft.Row([sample_name, variant_id], alignment=ft.MainAxisAlignment.CENTER)
 
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.add(captured_frame, function_rack, field_rack, control_rack)
+    page.add(captured_frame, function_rack, database_rack, field_rack, control_rack)
     capture_frame()
 
 ft.app(target=main)

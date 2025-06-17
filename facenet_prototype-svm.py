@@ -3,25 +3,23 @@ import tensorflow as tf
 import numpy as np
 import os
 import glob
-from basicsr.utils import imwrite
+import pickle
 from mtcnn import MTCNN
 from scipy.spatial.distance import cosine
+import pandas as pd
+from datetime import datetime
+import sys
 from sklearn.svm import SVC
 from sklearn.preprocessing import LabelEncoder
 
+sys.path.insert(0, './')
 
-# functions -------------------------------------------------------------------
 class Facenet():
-    net = cv.dnn.readNetFromCaffe(
-        'experiments/facenet/deploy.prototxt.txt',
-        'experiments/facenet/res10_300x300_ssd_iter_140000.caffemodel'
-    )
-
     def __init__(self, 
-                 input='emergency\\test', 
-                 output='facenet_results',
-                 database='emergency/database',
-                 facenet_model_path = 'experiments/facenet/20180402-114759.pb'):
+                 input='captures/standard/aaron', 
+                 output='captures_rec_cos/standard/aaron',
+                 database='database',
+                 facenet_model_path='experiments/facenetv11.pb'):
         self.input = input
         self.output = output
         self.facenet_model_path = facenet_model_path
@@ -29,45 +27,35 @@ class Facenet():
         self.database = database
         self.known_embeddings = None
         self.known_labels = None
-        self.svm_model = None
+        self.svm_classifier = None
+        self.label_encoder = None
 
-        self.facenet_model = self.load_facenet_model(facenet_model_path)
+        self.facenet_graph, self.input_tensor, self.output_tensor, self.phase_train_tensor = self.load_facenet_model(facenet_model_path)
+        self.sess = tf.compat.v1.Session(graph=self.facenet_graph)
         os.sep = '/'
     
-    # FACENET MODEL
+    # Load The Facenet Model
     def load_facenet_model(self, model_path):
-        facenet_model = tf.Graph()
-        with facenet_model.as_default():
-            graph_def = tf.compat.v1.GraphDef()
-            with tf.io.gfile.GFile(model_path, 'rb') as f:
-                graph_def.ParseFromString(f.read())
-                tf.import_graph_def(graph_def, name='')
-        print("facenet model is loaded")
-        return facenet_model
+        try:
+            facenet_graph = tf.Graph()
+            with facenet_graph.as_default():
+                graph_def = tf.compat.v1.GraphDef()
+                with tf.io.gfile.GFile(model_path, 'rb') as f:
+                    graph_def.ParseFromString(f.read())
+                    tf.import_graph_def(graph_def, name='')
+            print("Facenet model loaded")
+            input_tensor = facenet_graph.get_tensor_by_name('input:0')
+            output_tensor = facenet_graph.get_tensor_by_name('embeddings:0')
+            phase_train_tensor = facenet_graph.get_tensor_by_name('phase_train:0')
+        except Exception as e:
+            print(f"Error loading model: {e}")
+            facenet_graph = None
+            input_tensor = None
+            output_tensor = None
+            phase_train_tensor = None
+        return facenet_graph, input_tensor, output_tensor, phase_train_tensor
 
-    # FACE DETECTION MODELS
-    def detect_faces_dnn(self, image, net, conf_threshold=0.3):
-        h,w = image.shape[:2]
-        blob = cv.dnn.blobFromImage(cv.resize(image, (300, 300)), 1.0,
-                                    (300, 300), (104.0, 177.0, 123.0))
-        net.setInput(blob)
-        detections = net.forward()
-
-        faces = []
-        for i in range(detections.shape[2]):
-            confidence = detections[0, 0, i, 2]
-            if confidence > conf_threshold:
-                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                (startX, startY, endX, endY) = box.astype("int")
-                face = image[startY:endY, startX:endX]
-                faces.append((startX, startY, endX, endY, face))
-
-                h1, w1 = face.shape[:2]
-        
-        print(f"Number of faces detected: {len(faces)}")
-        return faces
-
-    # MTCNN
+    # Face Detection
     def detect_faces_mtcnn(self, image, conf_threshold=0.9, mode="multiple"):
         rgb_image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
         results = MTCNN().detect_faces(rgb_image)
@@ -89,7 +77,7 @@ class Facenet():
         elif mode=="single":
             return faces[np.argmax(confidences)]
 
-    # return a preprocessed face (returns only one)
+    # Preprocessing
     def preprocess_face(self, face, image_size=160):
         face = cv.resize(face, (image_size, image_size))
         face = face.astype('float32')
@@ -97,34 +85,66 @@ class Facenet():
         face = (face - mean) / std
         return face
 
-    # return list of embeddings
-    def generate_embeddings(self, facenet_model, faces):
-        with facenet_model.as_default():
-            with tf.compat.v1.Session(graph=facenet_model) as sess:
-                images_placeholder = facenet_model.get_tensor_by_name("input:0")
-                embeddings = facenet_model.get_tensor_by_name("embeddings:0")
-                phase_train_placeholder = facenet_model.get_tensor_by_name("phase_train:0")
+    # Extract embeddings
+    def generate_embeddings(self, faces):
+        if self.facenet_graph is None:
+            print("Facenet model is not loaded.")
+            return None
 
-                feed_dict = {images_placeholder: faces, phase_train_placeholder: False}
-                embeddings = sess.run(embeddings, feed_dict=feed_dict)
+        embeddings = []
+        for face in faces:
+            face = np.expand_dims(face, axis=0)
+            feed_dict = {self.input_tensor: face, self.phase_train_tensor: False}
+            embedding = self.sess.run(self.output_tensor, feed_dict=feed_dict)
+            embedding = np.squeeze(embedding)  # Squeeze to ensure it's 1-D
+            embeddings.append(embedding)
         
-        print("embedding complete.")
+        print("Embedding complete.")
         return embeddings
 
+    # Train SVM Classifier
+    def train_svm_classifier(self):
+        if self.known_embeddings is None or self.known_labels is None:
+            print("Known embeddings or labels are not available.")
+            return
+        
+        self.label_encoder = LabelEncoder()
+        encoded_labels = self.label_encoder.fit_transform(self.known_labels)
+        
+        self.svm_classifier = SVC(kernel='linear', probability=True)
+        self.svm_classifier.fit(self.known_embeddings, encoded_labels)
+        print("SVM classifier trained.")
+
+    # Recognize Faces using SVM
     def recognize_faces_svm(self, embeddings):
+        if self.svm_classifier is None or self.label_encoder is None:
+            print("SVM classifier or label encoder is not trained.")
+            return None
+
         recognized_faces = []
-        if self.svm_model:
-            predictions = self.svm_model.predict(embeddings)
-            probabilities = self.svm_model.predict_proba(embeddings)
-            
-            for i, prediction in enumerate(predictions):
-                confidence = max(probabilities[i])  # Get highest probability
-                label = self.label_encoder.inverse_transform([prediction])[0] if confidence >= 0.1 else "Unknown"
-                recognized_faces.append((label, confidence))
+        for embedding in embeddings:
+            encoded_label = self.svm_classifier.predict([embedding])
+            label = self.label_encoder.inverse_transform(encoded_label)[0]
+            probability = np.max(self.svm_classifier.predict_proba([embedding]))
+            recognized_faces.append((label, probability))
         
         return recognized_faces
     
+    # Process Database
     def process_database(self):
+        embeddings_file = 'known_embeddings.pkl'
+        labels_file = 'known_labels.pkl'
+
+        # Check if the embeddings and labels files exist
+        if os.path.exists(embeddings_file) and os.path.exists(labels_file):
+            print("Loading known embeddings and labels from files.")
+            with open(embeddings_file, 'rb') as f:
+                self.known_embeddings = pickle.load(f)
+            with open(labels_file, 'rb') as f:
+                self.known_labels = pickle.load(f)
+            return
+        
+        print("Processing database to generate known embeddings and labels.")
         database_path = self.database
         self.known_labels = []
         known_images = []
@@ -149,17 +169,17 @@ class Facenet():
 
         known_faces = known_images
         preprocessed_known_faces = [self.preprocess_face(face) for _, _, _, _, face in known_faces]
-        self.known_embeddings = self.generate_embeddings(self.facenet_model, preprocessed_known_faces)
+        self.known_embeddings = self.generate_embeddings(preprocessed_known_faces)
 
-        # Encode labels and train SVM
-        self.label_encoder = LabelEncoder()
-        encoded_labels = self.label_encoder.fit_transform(self.known_labels)
-        self.svm_model = SVC(kernel='linear', probability=True)
-        self.svm_model.fit(self.known_embeddings, encoded_labels)
-        print("SVM model trained.")
-
+        with open(embeddings_file, 'wb') as f:
+            pickle.dump(self.known_embeddings, f)
+        with open(labels_file, 'wb') as f:
+            pickle.dump(self.known_labels, f)
+        
+    # Save Result
     def run_recognition(self):
         self.process_database()
+        self.train_svm_classifier()
         
         if self.input.endswith('/') or self.input.endswith('\\'):
             self.input = self.input[:-1]
@@ -178,26 +198,28 @@ class Facenet():
 
             if len(faces) > 0:
                 preprocessed_faces = [self.preprocess_face(face) for _, _, _, _, face in faces]
-                embeddings = self.generate_embeddings(self.facenet_model, preprocessed_faces)
+                embeddings = self.generate_embeddings(preprocessed_faces)
 
-                # Please append the code for AVM here, you may use functions.
                 recognized_faces = self.recognize_faces_svm(embeddings)
 
-                for (startX, startY, endX, endY, _), (label, distance) in zip(faces, recognized_faces):
+                for (startX, startY, endX, endY, _), (label, probability) in zip(faces, recognized_faces):
                     cv.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 4)
-                    cv.putText(image, f'{label} - {round(distance*100, 2)}%', (startX, startY - 10), cv.FONT_HERSHEY_SIMPLEX, 1.8, (0, 255, 0), 4)
+                    cv.putText(image, f'{label} - {round(probability*100, 2)}%', (startX, startY - 10), cv.FONT_HERSHEY_SIMPLEX, 1.1, (0, 255, 0), 2)
                 
-                imwrite(image, f'{self.output}/{basename}_svmrecognition{ext}')
+                cv.imwrite(f'{self.output}/{basename}_recognition{ext}', image)
             else:
-                print("no faces found. repeating iteration.")
-                imwrite(image, f'{self.output}/{basename}_svmrecognition{ext}')
+                print("No faces found. Repeating iteration.")
+                cv.imwrite(f'{self.output}/{basename}_recognition{ext}', image)
 
 
-# main -------------------------------------------------------------------
 def main():
-    FN = Facenet(input='captures', output='output', database='database')
+    FN = Facenet(input='captures/standard/rance', output='captures_rec_svm/standard/rance', database='database')
     FN.run_recognition()
+    del FN
+
+    FN = Facenet(input='captures/enhanced/rance', output='captures_rec_svm/enhanced/rance', database='database')
+    FN.run_recognition()
+    del FN
 
 if __name__ == '__main__':
     main()
-

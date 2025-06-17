@@ -17,8 +17,8 @@ class SR():
                 version = '1.3',
                 upscale = 2,
                 bg_upsampler = 'realesrgan',
-                bg_tile = 200,
-                prefix = 'HR',
+                bg_tile = 0,
+                prefix = None,
                 suffix = None,
                 only_center_face = None,
                 aligned = None,
@@ -151,15 +151,15 @@ class SR():
                     extension = self.ext
 
                 if (self.suffix is None and self.prefix is None):
-                    save_restore_path = os.path.join(self.output, 'restored_imgs', f'{basename}.{extension}')
+                    save_restore_path = os.path.join(self.output, f'{basename}.{extension}')
                 else:
                     restore_name = f'{basename}'
                     if self.suffix is not None and self.prefix is None:
-                        restore_name = os.path.join(self.output, 'restored_imgs', f'{restore_name}_{self.suffix}') 
+                        restore_name = os.path.join(self.output, f'{restore_name}{self.suffix}.{extension}') 
                     if self.prefix is not None and self.suffix is None:
-                        restore_name = os.path.join(self.output, 'restored_imgs', f'{self.prefix}_{restore_name}')
+                        restore_name = os.path.join(self.output, f'{self.prefix}_{restore_name}.{extension}')
                     else:
-                        restore_name = os.path.join(self.output, 'restored_imgs', f'{self.prefix}_{restore_name}_{self.suffix}')
+                        restore_name = os.path.join(self.output, f'{self.prefix}_{restore_name}_{self.suffix}.{extension}')
                     save_restore_path = restore_name
                 imwrite(restored_img, save_restore_path)
     
@@ -172,10 +172,12 @@ class SR():
 
 def main():
     sr_prototype = SR(
-        input = 'captures/standard', 
-        output = 'captures/enhanced',
+        input = 'captures_sample/captures', 
+        output = 'captures_sample/captures_enhanced',
+        suffix='H',
         upscale=2)
     sr_prototype.Run()
+    del sr_prototype
 
 if __name__ == '__main__':
     main()

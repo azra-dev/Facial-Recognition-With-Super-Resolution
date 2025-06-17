@@ -7,3 +7,9 @@ gfpgan/weights/detection_Resnet50_Final.pth
 __pycache__/
 *.pyc
 _gfpgan-package/.eggs
+tensorflow-2.18.0-cp310-cp310-linux_x86_64.whl
+captures
+captures_rec_cos
+captures_rec_svm
+captures/enhanced
+captures/standard

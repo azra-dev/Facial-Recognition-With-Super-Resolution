@@ -22,7 +22,7 @@ class Facenet():
     def __init__(self, 
                  input='emergency\\test', 
                  output='facenet_results',
-                 database='emergency/database',
+                 database='database',
                  facenet_model_path = 'experiments/facenet/20180402-114759.pb'):
         self.input = input
         self.output = output
@@ -210,7 +210,7 @@ class Facenet():
 
             if len(faces) > 0:
                 preprocessed_faces = [self.preprocess_face(face) for _, _, _, _, face in faces]
-                embeddings = self.generate_embeddings(self.facenet_model, preprocessed_faces)
+                embeddings = self.generate_embeddings(preprocessed_faces)
 
                 recognized_faces = self.recognize_faces(self.known_embeddings, self.known_labels, embeddings)
 
@@ -226,8 +226,13 @@ class Facenet():
 
 # main -------------------------------------------------------------------
 def main():
-    FN = Facenet(input='captures/standard', output='captures_recognition/cosine', database='database')
+    FN = Facenet(input='captures_sample/captures', output='rec', database='/db')
     FN.run_recognition()
+    del FN
+
+    FN = Facenet(input='captures_sample/captures_enhanced', output='rec_enhanced', database='/db')
+    FN.run_recognition()
+    del FN
 
 if __name__ == '__main__':
     main()
