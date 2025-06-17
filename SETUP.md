@@ -24,6 +24,7 @@ The Raspberry 4 uses any Linux-based OS with any Desktop Environment. Recommende
 - sudo apt-get install libgtk-3-dev
 - sudo apt-get install libboost-all-dev
 - sudo apt install libmpv-dev mpv
+- sudo apt install libcap-dev
 
 ### **Virtual  Environment**
 
@@ -32,10 +33,10 @@ The Raspberry 4 uses any Linux-based OS with any Desktop Environment. Recommende
 - pip install basicsr>=1.4.2 facexlib>=0.2.5
 - python _gfpgan-package/setup.py develop
 - pip install realesrgan
-- wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P experiments/pretrained_models
+- wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P experiments
 
 #### For Face Detection
-- pip install keras-facenet tensorflow opencv-python mtcnn
+- pip install keras-facenet tensorflow opencv-python mtcnn scikit-learn
 > [!WARNING]
 > The following libraries may not be used in the thesis.
 
@@ -43,7 +44,7 @@ The Raspberry 4 uses any Linux-based OS with any Desktop Environment. Recommende
 - pip install dlib==19.24.2 face-recognition 
 
 #### For GUI
-- pip install flet==0.19.0
+- pip install flet==0.19.0 picamera2
 
 # Error Handling 🔧
 
