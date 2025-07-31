@@ -38,13 +38,15 @@ def main(page:Page):
 
     # Iterating Capture Frames --------
     def capture_frame():
+        cap = cv2.VideoCapture(0)
         recognize_button.disabled = False
         update_database_button.disabled = False
         page.update()
         try:
             while True:
                 # frame=picam2.capture_array()
-                frame = None
+                # frame = None
+                ret,frame = cap.read()
                 if frame is not None:
                     _, buffer = cv2.imencode('.png', frame)
                     png_as_text = base64.b64encode(buffer).decode('utf-8') 
@@ -75,7 +77,7 @@ def main(page:Page):
         # picam2.preview_configuration.main.size = (400, 300)
         # picam2.configure("preview")
         # picam2.start()
-
+        src_base64_img = captured_frame.src_base64
         if (src_base64_img is not None):
             if src_base64_img.startswith('data:image'):
                 src_base64_img = src_base64_img.split(',')[1]
@@ -83,11 +85,14 @@ def main(page:Page):
             img_data = base64.b64decode(src_base64_img)
             np_img = np.frombuffer(img_data, dtype=np.uint8)
             conv_img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-            if (database_mode.value):
+            if (internal_mode.value):
                 capture_path = os.path.join('database', f"{sample_name.value}.png")
                 cv2.imwrite(capture_path, conv_img)
             else:
-                capture_path = os.path.join('captures', 'standard', f"{sample_name.value}_{variant_id.value}.png")
+                if not os.path.exists(path=os.path.join('captures', 'standard', sample_name.value)):
+                    os.mkdir(os.path.join('captures', 'standard', sample_name.value))
+                
+                capture_path = os.path.join('captures', 'standard', sample_name.value, f"{sample_name.value}_{variant_id.value}.png")
                 cv2.imwrite(capture_path, conv_img)
             
 
@@ -98,6 +103,12 @@ def main(page:Page):
         FN = Facenet(
             input=f'captures/standard/{participant}', 
             output=f'captures_rec_cos/standard/{participant}', 
+            database='database')
+        FN.run_recognition()
+        del FN
+        FN = Facenet(
+            input=f'captures/enhanced/{participant}', 
+            output=f'captures_rec_cos/enhanced/{participant}', 
             database='database')
         FN.run_recognition()
         del FN
@@ -158,11 +169,12 @@ def main(page:Page):
     enhanced_button = ft.ElevatedButton("Enhanced Faces", on_click=trigger_enhance, disabled=False)
     
     update_database_button = ft.ElevatedButton("Update Database", on_click=modify_database, disabled=False)
-    database_mode = ft.Container(content=ft.Checkbox(label="Store in database", value=False, width=20, height=20), padding=padding.only(right=150))
+    internal_mode = ft.Checkbox(label="Store in database", value=False, width=20, height=20)
+    database_mode = ft.Container(content=internal_mode, padding=padding.only(right=150))
 
     capture_button = ft.ElevatedButton("Capture Faces", on_click=trigger_capture, disabled=False)
 
-    sample_name = ft.TextField(hint_text="Name of Participant", width=250, height=50, text_size=10, text_align=True)
+    sample_name = ft.TextField(hint_text="Name of Participant", width=250, height=50, text_size=10, text_align=True, dense=True)
     variant_id = ft.TextField(hint_text="Variant ID", width=120, height=50, text_size=10, dense=True)
 
     # RACKS

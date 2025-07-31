@@ -192,16 +192,24 @@ class Facenet():
 
                 for (startX, startY, endX, endY, _), (label, distance) in zip(faces, recognized_faces):
                     cv.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 4)
-                    cv.putText(image, f'{label} - {round(distance*100, 2)}%', (startX, startY - 10), cv.FONT_HERSHEY_SIMPLEX, 1.1, (0, 255, 0), 2)
+                    cv.putText(image, f'{label[:-1]} - {round(distance*100, 2)}%', (startX, startY - 10), cv.FONT_HERSHEY_SIMPLEX, 1.1, (0, 255, 0), 2)
                 
+                if not os.path.exists(self.output):
+                    os.mkdir(self.output)
                 cv.imwrite(f'{self.output}/{basename}_recognition{ext}', image)
             else:
+                if not os.path.exists(self.output):
+                    os.mkdir(self.output)
                 print("No faces found. Repeating iteration.")
                 cv.imwrite(f'{self.output}/{basename}_recognition{ext}', image)
 
 
 def main():
-    FN = Facenet(input='captures_sample/captures_enhanced', output='captures_sample/rec_enhanced', database='db')
+    FN = Facenet(input='captures/standard/godwyn', output='captures_recog_cosine', database='db')
+    FN.run_recognition()
+    del FN
+
+    FN = Facenet(input='captures/enhanced/godwyn/None_captures/enhanced/godwyn', output='captures_recog_cosine', database='db')
     FN.run_recognition()
     del FN
 

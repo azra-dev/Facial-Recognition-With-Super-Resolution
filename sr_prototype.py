@@ -152,14 +152,18 @@ class SR():
 
                 if (self.suffix is None and self.prefix is None):
                     save_restore_path = os.path.join(self.output, f'{basename}.{extension}')
+                    print(f"if case name: {save_restore_path}")
                 else:
                     restore_name = f'{basename}'
                     if self.suffix is not None and self.prefix is None:
-                        restore_name = os.path.join(self.output, f'{restore_name}{self.suffix}.{extension}') 
-                    if self.prefix is not None and self.suffix is None:
+                        restore_name = os.path.join(self.output, f'{restore_name}{self.suffix}.{extension}')
+                        print(f"1st case name: {restore_name}")
+                    elif self.prefix is not None and self.suffix is None:
                         restore_name = os.path.join(self.output, f'{self.prefix}_{restore_name}.{extension}')
+                        print(f"2nd case name: {restore_name}")
                     else:
                         restore_name = os.path.join(self.output, f'{self.prefix}_{restore_name}_{self.suffix}.{extension}')
+                        print(f"3rd case name: {restore_name}")
                     save_restore_path = restore_name
                 imwrite(restored_img, save_restore_path)
     
@@ -172,8 +176,8 @@ class SR():
 
 def main():
     sr_prototype = SR(
-        input = 'captures_sample/captures', 
-        output = 'captures_sample/captures_enhanced',
+        input = 'captures/standard/Test', 
+        output = 'captures/enhanced/Test',
         suffix='H',
         upscale=2)
     sr_prototype.Run()
