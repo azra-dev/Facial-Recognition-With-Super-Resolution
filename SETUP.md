@@ -66,3 +66,11 @@ to
 ```py
 from torchvision.transforms.functional import rgb_to_grayscale
 ```
+
+# Model Download ⬇️
+Due to model exceeding 100MB, they cannot be pushed into the commits, but only at [Release.](https://github.com/azra-dev/Facial-Recognition-With-Super-Resolution/releases/tag/v1.0) Here are the following are required to download and which path it must be placed.
+|Model or Wheel|File Path|
+|---|---|
+|detection_Resnet50_Final.pth|`experiments/facenet/detection_Resnet50_Final.pth` and `gfpgan/weights/detection_Resnet50_Final.pth`|
+|GFPGANv1.3.pth|`experiments/GFPGANv1.3.pth`|
+|tensorflow-2.18.0-cp310-cp310-linux_x86_64.whl|`tensorflow-2.18.0-cp310-cp310-linux_x86_64.whl`|
