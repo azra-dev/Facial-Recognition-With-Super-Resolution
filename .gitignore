@@ -13,3 +13,11 @@ captures_rec_cos
 captures_rec_svm
 captures/enhanced
 captures/standard
+experiments/pretrained_models/GFPGANv1.3.pth
+experiments/facenet/model-20180402-114759.ckpt-275.data-00000-of-00001
+./.git/objects/pack/pack-9ef12b8879b38306166fe1b8dd7ac45489520a0c.pack
+./.git/objects/pack/pack-ab8a3d9d7a2ac0624fc6aac0268f027ec110ae16.pack
+./experiments/facenet/model-20180402-114759.ckpt-275.data-00000-of-00001
+./experiments/pretrained_models/GFPGANv1.3.pth
+./gfpgan/weights/detection_Resnet50_Final.pth
+./gfpgan/weights/GFPGANv1.3.pth
